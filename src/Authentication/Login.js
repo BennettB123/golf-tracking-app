@@ -1,20 +1,15 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import './Registration.css';
+import './Login.css';
 import BounceLoader from "react-spinners/BounceLoader";
 import {LoadingSpinnerConfig} from "../GlobalVars.js";
 
-class Registration extends React.Component {
-    // Used https://reactjs.org/docs/forms.html#handling-multiple-inputs
-
+class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             Username: "",
-            Email: "",
             Password: "",
-            FirstName: "",
-            LastName: "",
             errorMessage: "",
             showErrorMessage: false,
             loading: false,
@@ -36,7 +31,7 @@ class Registration extends React.Component {
         event.preventDefault();
 
         // client-side input sanitization/validation
-        if (!this.state.Username || !this.state.Email || !this.state.Password || !this.state.FirstName || !this.state.LastName){
+        if (!this.state.Username || !this.state.Password){
             this.ToggleLoading(false);
             this.DisplayErrorMessage("All fields must be filled in!");
             return;
@@ -45,13 +40,10 @@ class Registration extends React.Component {
         var data = 
         {
             Username : this.state.Username,
-            Email : this.state.Email,
             Password : this.state.Password,
-            FirstName : this.state.FirstName,
-            LastName : this.state.LastName,
         }
 
-        await fetch('https://dbballentine.com/golf/api/authenticate/register', {
+        await fetch('https://dbballentine.com/golf/api/authenticate/login', {
             method: 'POST',
             crossDomain: true,
             headers: {
@@ -61,12 +53,23 @@ class Registration extends React.Component {
         })
         .then(res => {
             if (res.ok) {
-                console.log("REGISTRATION SUCCESS - REDIRECTING TO LOGIN PAGE");
-                this.props.history.push("/login");
+                console.log("LOGIN SUCCESS - REDIRECTING TO HOME PAGE");
+                res.json().then(data => {
+                    localStorage.setItem("golf", data.token);
+                    this.props.history.push("/home");
+                });
             }
+            // 401 == Unauthorized (incorrect username/password)
+            else if (res.status === 401) {
+                this.DisplayErrorMessage("Incorrect username or password");
+            }
+            // any other error
             else {
                 res.json().then(data => {
-                    this.DisplayErrorMessage(data.message);    
+                    if (data.message)
+                        this.DisplayErrorMessage(data.message);    
+                    else
+                        this.DisplayErrorMessage("An error occured, please try again");
                 });
             }
         });
@@ -88,18 +91,13 @@ class Registration extends React.Component {
 
     render() {
       return (
-        <div className="RegistrationFormContainer">
+        <div className="LoginFormContainer">
             <BounceLoader loading={this.state.loading} color={LoadingSpinnerConfig.color} css={LoadingSpinnerConfig.css} size={LoadingSpinnerConfig.size} speedMultiplier={LoadingSpinnerConfig.speedMultiplier} />
             { this.state.loading ? <div style={{position: 'fixed', display: 'block', width: '100%', height: '100%', zIndex:2, top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)'}}/> : null }
-            <form className="RegistrationForm" onSubmit={this.handleFormSubmit}>
+            <form className="LoginForm" onSubmit={this.handleFormSubmit}>
                 <label htmlFor="Username">
                     Username
                     <input type="text" name="Username" onChange={this.handleInputChange}/>
-                </label>
-
-                <label htmlFor="Email">
-                    Email
-                    <input type="text" name="Email" onChange={this.handleInputChange}/>
                 </label>
 
                 <label htmlFor="Password">
@@ -107,28 +105,17 @@ class Registration extends React.Component {
                     <input type="password" name="Password" onChange={this.handleInputChange}/>
                 </label>
 
-                <label htmlFor="FirstName">
-                    First Name
-                    <input type="text" name="FirstName" onChange={this.handleInputChange}/>
-                </label>
-
-                <label htmlFor="LastName">
-                    Last Name
-                    <input type="text" name="LastName" onChange={this.handleInputChange}/>
-                </label>
-
                 <div className="ErrorMessageContainer">
                     { this.state.showErrorMessage ? <ErrorMessage message={this.state.errorMessage}/> : null }
                 </div>
 
-                <input type="submit" value="Register"/>
+                <input type="submit" value="Login"/>
             </form>
 
             <div>
-                <label className="LoginLinkLabel"> Already have an account?</label>
-                <Link to="/login" className="LoginLink">Login</Link>
+                <label className="RegisterLinkLabel"> Don't have an account?</label>
+                <Link to="/register" className="RegisterLink">Register</Link>
             </div>
-            
         </div>
         );
     }
@@ -140,4 +127,4 @@ const ErrorMessage = (props) => (
     </div>
   );
 
-export default Registration;
+export default Login;

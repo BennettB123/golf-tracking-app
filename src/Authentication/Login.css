@@ -1,4 +1,4 @@
-.RegistrationFormContainer {
+.LoginFormContainer {
     border-style: solid;
     border-color: #000000;
     margin: 10px;
@@ -7,7 +7,7 @@
     background-color: #dddddd;
 }
 
-.RegistrationForm {
+.LoginForm {
     display: flex;
     flex-direction: column;
 }

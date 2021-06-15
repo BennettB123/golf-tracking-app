@@ -1,15 +1,30 @@
-import logo from './logo.svg';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 import './App.css';
-import RegistrationForm from './Authentication/Registration.js';
+import Header from './HeaderFooter/Header.js';
+import Registration from './Authentication/Registration.js';
+import Login from './Authentication/Login.js';
+import Home from './Home/Home.js';
 
 function App() {
   return (
-    <div className="App">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        
-        <RegistrationForm />
+    <Router>
+      <div className="App">
+        <Header />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/register" component={Registration} />
+          <Route path="/login" component={Login} />
+          <Route path="/home" component={Home} />
+          <Route path="*" component={Home} />
+        </Switch>
 
-    </div>
+      </div>
+    </Router>
   );
 }
 

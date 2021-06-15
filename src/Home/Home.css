@@ -1,0 +1,16 @@
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.AllRoundsContainer {
+    padding: 10px;
+}
+
+.RoundTableContainer {
+    padding: 5px;
+}
+
+.RoundTable {
+    width: 100%;
+}
