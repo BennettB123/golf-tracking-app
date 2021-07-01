@@ -12,7 +12,7 @@ import Home from './Home/Home.js';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/golf">
       <div className="App">
         <Header />
         <Switch>

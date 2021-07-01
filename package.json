@@ -1,5 +1,6 @@
 {
   "name": "golf-tracking-app",
+  "homepage": "/golf",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
