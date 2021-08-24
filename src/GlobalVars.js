@@ -7,3 +7,5 @@ export const LoadingSpinnerConfig =
     color: '#00ff55',
     speedMultiplier: 1.25,
 }
+
+export const storageTokenKey = "golf";

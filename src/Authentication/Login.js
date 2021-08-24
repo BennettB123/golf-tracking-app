@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import './Login.css';
 import BounceLoader from "react-spinners/BounceLoader";
-import {LoadingSpinnerConfig} from "../GlobalVars.js";
+import {LoadingSpinnerConfig, storageTokenKey} from "../GlobalVars.js";
 
 class Login extends React.Component {
     constructor(props) {
@@ -55,7 +55,7 @@ class Login extends React.Component {
             if (res.ok) {
                 console.log("LOGIN SUCCESS - REDIRECTING TO HOME PAGE");
                 res.json().then(data => {
-                    localStorage.setItem("golf", data.token);
+                    localStorage.setItem(storageTokenKey, data.token);
                     this.props.history.push("/home");
                 });
             }

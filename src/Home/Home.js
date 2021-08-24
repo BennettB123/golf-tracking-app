@@ -1,5 +1,6 @@
 import React from 'react';
 import './Home.css';
+import {LoadingSpinnerConfig, storageTokenKey} from "../GlobalVars.js";
 
 const testJsonData = [
     {
@@ -76,10 +77,35 @@ const testJsonData = [
     }
 ]
 
-class Home extends React.Component {
+class Home extends React.Component {    
+
+    constructor(props){
+        super(props);
+        var token = localStorage.getItem(storageTokenKey);
+        if (token === null){
+            this.GoToLoginPage();
+        }
+
+        this.Logout = this.Logout.bind(this);
+        this.GoToLoginPage = this.GoToLoginPage.bind(this);
+    }
+
+    GoToLoginPage() {
+        this.props.history.push("/login");
+    }
+
+    Logout(){
+        localStorage.removeItem(storageTokenKey);
+        this.props.history.push("/login");
+    }
+
     render() {
       return (
         <div className="HomeContainer">
+            <div className="LogoutButtonContainer">
+                <button className="LogoutButton" onClick={this.Logout}>Log Out</button>
+            </div>
+
             <RoundsList />
         </div>
         );
@@ -128,8 +154,20 @@ class Round extends React.Component {
                          this.props.round.hole18;
         this.state = {
             totalScore: total,
-            netScore: total - props.round.coursePar
+            netScore: total - props.round.coursePar,
+            dateObj: new Date(this.props.round.date),
         }
+
+        this.EditRound = this.EditRound.bind(this);
+        this.DeleteRound = this.DeleteRound.bind(this);
+    }
+
+    EditRound(){
+        console.log("EDIT ROUND WITH ID: " + this.props.round.roundId);
+    }
+
+    DeleteRound(){
+        console.log("DELETE ROUND WITH ID: " + this.props.round.roundId);
     }
 
     render() {
@@ -161,12 +199,13 @@ class Round extends React.Component {
                             <th>Your Score</th>
                             <th>Course Par</th>
                             <th>Net Score</th>
+                            <th>Edit/Delete</th>
                         </tr>
                     </thead>
                     <tbody className="RoundTableBody">
                         <tr className="RoundTableBodyRow">
                             <td>{this.props.round.courseName}</td>
-                            <td>{this.props.round.date}</td>
+                            <td>{this.state.dateObj.toDateString()}</td>
                             <td>{this.props.round.hole1}</td>
                             <td>{this.props.round.hole2}</td>
                             <td>{this.props.round.hole3}</td>
@@ -188,6 +227,12 @@ class Round extends React.Component {
                             <td>{this.state.totalScore}</td>
                             <td>{this.props.round.coursePar}</td>
                             <td>{this.state.netScore}</td>
+                            <td>
+                                <div>
+                                    <button className="EditRoundButton" onClick={this.EditRound}>Edit</button>
+                                    <button className="DeleteRoundButton" onClick={this.DeleteRound}>Delete</button>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
